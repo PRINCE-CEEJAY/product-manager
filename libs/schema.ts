@@ -8,3 +8,5 @@ export const productTable = pgTable("productTable", {
   price: real().notNull(),
   category: varchar({length: 40}).notNull()
 });
+
+export type ProductType = infers<typeof productTable>
