@@ -131,6 +131,9 @@
   textarea {
     @apply p-2 rounded-md border-2 focus:ring-2 bg-primary-foreground text-primary w-full;
   }
+  h1 {
+    @apply text-3xl font-bold;
+  }
 }
 @layer components {
   .container {

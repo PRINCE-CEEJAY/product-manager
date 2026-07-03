@@ -46,7 +46,6 @@ export default function CreateProduct() {
     if (!file) return;
 
     const objectUrl = URL.createObjectURL(file);
-    setImageUrl(objectUrl);
 
     const formdata = new FormData();
     formdata.append('file', file);
@@ -82,11 +81,19 @@ export default function CreateProduct() {
               control={control}
               render={({ field: { onChange, onBlur, name, ref } }) => (
                 <input
+                  className='cursor-pointer'
                   type='file'
                   name={name}
                   ref={ref}
                   onBlur={onBlur}
-                  onChange={(e) => onChange(e.target.files)}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                      const objectUrl = URL.createObjectURL(files[0]);
+                      setImageUrl(objectUrl);
+                      onChange(files);
+                    }
+                  }}
                   accept='image/*'
                 />
               )}
@@ -99,6 +106,8 @@ export default function CreateProduct() {
             {imageUrl && (
               <Image
                 src={imageUrl}
+                width={100}
+                height={100}
                 alt='preview'
                 className='mt-2 max-h-48'
               />
