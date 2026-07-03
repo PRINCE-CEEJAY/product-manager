@@ -10,7 +10,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 const productSchema = z.object({
@@ -33,19 +33,18 @@ export default function CreateProduct() {
   const {
     control,
     handleSubmit,
+    reset,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ProductType>({
     resolver: zodResolver(productSchema),
   });
 
-  function onSubmit(data: ProductType) {
+  async function onSubmit(data: ProductType) {
     const fileList = data.image as FileList;
     const file = fileList?.[0];
 
     if (!file) return;
-
-    const objectUrl = URL.createObjectURL(file);
 
     const formdata = new FormData();
     formdata.append('file', file);
@@ -53,9 +52,13 @@ export default function CreateProduct() {
     console.log(`uploaded file: ${file.name}`);
     console.log(data);
 
-    // Cleanup URL object
-    return () => URL.revokeObjectURL(objectUrl);
+    setTimeout(() => {
+      reset();
+    }, 1000);
   }
+  useEffect(() => {
+    return () => URL.revokeObjectURL(imageUrl);
+  }, [imageUrl]);
 
   return (
     <Card className='max-w-md m-auto'>
@@ -157,7 +160,7 @@ export default function CreateProduct() {
             className='w-full cursor-pointer'
             type='submit'
           >
-            Submit
+            {isSubmitting ? 'Loading ...' : 'Submit'}
           </Button>
         </form>
       </CardContent>
